@@ -24,6 +24,7 @@ public class Manager {
         List studentTypeList = this.connection.getAll("StudentType");
         List universitiesList = this.connection.getAll("University");
         List aList = this.connection.getAll("AppointmentType");
+        this.getAllStudents();
         for (int i = 1; i <= aList.size(); i++) {
             AppointmentType appointmentType = (AppointmentType) aList.get(i);
             appointmentTypes.put(appointmentType.getId(), appointmentType.getName());
@@ -31,21 +32,19 @@ public class Manager {
 
         for (int i = 1; i <= studentTypeList.size(); i++) {
             StudentType studentType = (StudentType) studentTypeList.get(i);
-            studentTypes.put(studentType.getId(), studentType.getName());
-        }
-
-        for (int i = 1; i <= studentTypeList.size(); i++) {
-            StudentType studentType = (StudentType) studentTypeList.get(i);
             this.studentTypes.put(studentType.getId(), studentType.getName());
         }
+
+
         for (int i = 1; i <= universitiesList.size(); i++) {
             University university = (University) universitiesList.get(i);
             this.univerities.put(university.getId(), university.getName());
         }
-
-        int numberOfStudents = this.view.intPositiveInput("Ingrese el numero de estudiantes", "Ingrese un numero valido");
-        this.addStudents(numberOfStudents);
-        getAppointment();
+        if (this.students.isEmpty()){
+            int numberOfStudents = this.view.intPositiveInput("Ingrese el numero de estudiantes", "Ingrese un numero valido");
+            this.addStudents(numberOfStudents);
+        }
+        this.getAppointment();
     }
     public void addPatient(){
         String firstName = this.view.input("Ingrese el primer nombre:");
@@ -158,21 +157,35 @@ public class Manager {
         }
     }
     public void addAppointment(String type){
-        String reason = this.view.input("Ingrese la razon de la cita:");
-        int appointmentType = this.view.selectKey(this.appointmentTypes);
-        view.print("Seleccione el estudiante al que le quiere asignar");
-        int studentIndex = this.getStudentIndex();
-        String d =  view.input("Ingrese 'si' si desea agregar un nuevo paciente o asignar un paciente.\nSi no desea puede ingresar cualquier otra cosa");
-        if (d.equalsIgnoreCase("si")){
-            this.addPatient();
+//        this.getAllStudents();
+//        this.getAllStudents();
+        if (this.students.isEmpty()){
+            view.print("No hay estudiantes para hacer la cita");
+        }else{
+            String reason = this.view.input("Ingrese la razon de la cita:");
+            int appointmentType = this.view.selectKey(this.appointmentTypes);
+            view.print("Seleccione el estudiante al que le quiere asignar");
+            int studentIndex = this.getStudentIndex();
+            int patientIndex = 0;
+            if (this.patients.isEmpty()){
+                view.print("No tiene pacientes tiene que agregar uno.");
+                this.addPatient();
+                patientIndex = this.getPatientIndex();
+            }else{
+                String d =  view.input("Ingrese 'si' si desea agregar un nuevo paciente o asignar un paciente.\nSi no desea puede ingresar cualquier otra cosa");
+                if (d.equalsIgnoreCase("si")){
+                    this.addPatient();
+                }
+                view.print("Seleccione el paciente al que le quiere asignar");
+                patientIndex = this.getPatientIndex();
+            }
+
+            String observations = this.view.input("Ingrese las observaciones de la cita:");
+            Appointment appointment = new Appointment(observations, reason, patientIndex, studentIndex, appointmentType);
+            this.connection.getSession().save(appointment);
+            view.print("Cita tipo " + this.appointmentTypes.get(appointmentType) + " ingresada con exito");
+            this.getAppointment();
         }
-        view.print("Seleccione el paciente al que le quiere asignar");
-        int patientIndex = this.getPatientIndex();
-        String observations = this.view.input("Ingrese las observaciones de la cita:");
-        Appointment appointment = new Appointment(observations, reason, patientIndex, studentIndex, appointmentType);
-        this.connection.getSession().save(appointment);
-        view.print("Cita tipo " + this.appointmentTypes.get(appointmentType) + " ingresada con exito");
-        this.getAppointment();
     }
 
     public void showAppointments(String who){
