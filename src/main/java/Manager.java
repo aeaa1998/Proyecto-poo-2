@@ -5,7 +5,7 @@ import java.text.*;
 public class Manager {
     View view;
     Map<Integer, String> studentTypes = new HashMap<Integer, String>();
-    Map<Integer, String> univerities = new HashMap<Integer, String>();
+    Map<Integer, String> universities = new HashMap<Integer, String>();
     Map<Integer, String> studentsNames = new HashMap<Integer, String>();
     Map<Integer, Student> students = new HashMap<Integer, Student>();
     Map<Integer, Appointment> appointments = new HashMap<Integer, Appointment>();
