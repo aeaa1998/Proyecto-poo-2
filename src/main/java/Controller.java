@@ -25,6 +25,26 @@ public class Controller {
         this.manager = new Manager(myConnection);
     }
 
+    public void main(){
+        while (this.running){
+            String menu = this.printMenu();
+            switch (menu){
+                case "Jornadas":
+                    this.appointmentMenu();
+                    break;
+                case "Estudiantes":
+                    this.studentMenu();
+                    break;
+                case "Pacientes":
+                    this.patientMenu();
+                    break;
+                case "Salir":
+                    this.running = false;
+                    break;
+            }
+        }
+        this.myConnection.closeSession();
+    }
     public String printMenu(){
         return this.view.selectOptions(this.menu);
     }
@@ -33,93 +53,87 @@ public class Controller {
     public String printPatientsMenu(){
         return this.view.selectOptions(this.patientsMenu);
     }
-	
-	public void Menu(){
-		
-		boolean active = true;
-		while(active){
-			String  m = this.printMenu();
-			switch(m)){
-				case "Jornadas":
-					String j = this.view.selectOptions(this.appointmentsMenu);
-					boolean case1 = true;
-					while(case1){
-						switch(j){
-							case "Solicitar jornada":
-								//code
-							break;
-							case "Ver jornadas de un estudiante":
-								//code
-							break;
-							case "Ver jornadas de un paciente":
-								//code
-							break;
-							case "Regresar":
-								case1 = false;
-							break;
-							default:
-								view.print("Ingrese una opcion valida.");
-						}
-					}
-				break;
-				case "Estudiantes":
-					String k = this.view.selectOptions(this.studentsMenu);
-					boolean case2 = true;
-					while(case2){
-						switch(k){
-							case "Ver todos los estudiantes":
-								//code
-							break;
-							case "Agregar estudiante":
-								//code
-							break;
-							case "Ver estudiante por tipo":
-								//code
-							break;
-							case "Agregar estudiantes":
-								//code
-							break;
-							case "Regresar":
-								case2 = false;
-							break;
-							default:
-								view.print("Ingrese una opcion valida.");
-						}
-					}
-				break;
-				case "Pacientes":
-					String l = this.view.selectOptions(this.patientsMenu);
-					boolean case3 = true;
-					while(case3){
-						switch(l){
-							case "Ver todos los pacientes":
-								//code
-							break;
-							case "Agregar paciente":
-								//code
-							break;
-							case "Regresar":
-								case3 = false;
-							break;
-							default:
-								view.print("Ingrese una opcion valida");
-						}
-					}
-				break;
-				case "Salir":
-					view.print("Gracias por utilizar este prototipo.");
-					active = false;
-				break;
-				default: 
-					view.print("Ingrese una opcion valida.");
-			}
-		}
-	}
 
     public String printStudentMenu(){
         return this.view.selectOptions(this.studentsMenu);
     }
 
 
+    public String printAppointmentMenu(){
+        return this.view.selectOptions(this.appointmentsMenu);
+    }
 
+    public void newAppointment(){
+        this.manager.addAppointment();
+    }
+
+    public void showAppointments(String who){
+        this.manager.showAppointments(who);
+    }
+
+    public void appointmentMenu(){
+        this.appointmentBool = true;
+        while(this.appointmentBool){
+            String appointMenu = this.printAppointmentMenu();
+            switch (appointMenu){
+                case "Solicitar jornada":
+                    this.newAppointment();
+                    break;
+                case "Ver jornadas de un estudiante":
+                    this.showAppointments("student");
+                    break;
+                case "Ver jornadas de un paciente":
+                    this.showAppointments("patient");
+                    break;
+                case "Regresar":
+                    this.appointmentBool = false;
+                    break;
+
+            }
+        }
+    }
+    public void studentMenu(){
+        this.studentsBool = true;
+        while(this.studentsBool){
+            String menu = this.printStudentMenu();
+            switch (menu){
+                case "Ver todos los estudiantes":
+                    this.manager.printAllStudents();
+                    break;
+                case "Ver estudiante por tipo":
+                    this.manager.filterStudents();
+                    break;
+                case "Agregar estudiante":
+                    this.manager.addStudent();
+                    break;
+                case "Agregar estudiantes":
+                    int i = this.view.intPositiveInput("Ingrese el numero de estudiantes que desea agregar", "Ingrese un valor valido");
+                    this.manager.addStudents(i);
+                    break;
+                case "Regresar":
+                    this.studentsBool = false;
+                    break;
+
+            }
+        }
+    }
+    public void patientMenu(){
+        this.patientsBool = true;
+        while(this.patientsBool){
+            String menu = this.printPatientsMenu();
+
+            switch (menu){
+                case "Ver todos los pacientes":
+                    this.manager.printAllPatients();
+                    break;
+                case "Agregar paciente":
+                    this.manager.addPatient();
+                    break;
+                case "Regresar":
+                    this.patientsBool = false;
+                    break;
+
+            }
+        }
+    }
 }
