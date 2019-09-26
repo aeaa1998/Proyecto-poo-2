@@ -1,7 +1,7 @@
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Column;
 
 @Entity
 @Table(name="universities")
@@ -12,6 +12,9 @@ public class University {
 
     @Column(name="name")
     private String name;
+
+    public University() {
+    }
 
     public University(String name) {
         this.name = name;
