@@ -1,3 +1,6 @@
+import org.hibernate.HibernateException;
+import org.hibernate.Transaction;
+
 import java.util.*;
 import java.lang.*;
 import java.text.*;
@@ -5,7 +8,7 @@ import java.text.*;
 public class Manager {
     View view;
     Map<Integer, String> studentTypes = new HashMap<Integer, String>();
-    Map<Integer, String> universities = new HashMap<Integer, String>();
+    Map<Integer, String> univerities = new HashMap<Integer, String>();
     Map<Integer, String> studentsNames = new HashMap<Integer, String>();
     Map<Integer, Student> students = new HashMap<Integer, Student>();
     Map<Integer, Appointment> appointments = new HashMap<Integer, Appointment>();
@@ -25,18 +28,18 @@ public class Manager {
         List universitiesList = this.connection.getAll("University");
         List aList = this.connection.getAll("AppointmentType");
         this.getAllStudents();
-        for (int i = 1; i <= aList.size(); i++) {
+        for (int i = 0; i < aList.size(); i++) {
             AppointmentType appointmentType = (AppointmentType) aList.get(i);
             appointmentTypes.put(appointmentType.getId(), appointmentType.getName());
         }
 
-        for (int i = 1; i <= studentTypeList.size(); i++) {
+        for (int i = 0; i < studentTypeList.size(); i++) {
             StudentType studentType = (StudentType) studentTypeList.get(i);
             this.studentTypes.put(studentType.getId(), studentType.getName());
         }
 
 
-        for (int i = 1; i <= universitiesList.size(); i++) {
+        for (int i = 0; i < universitiesList.size(); i++) {
             University university = (University) universitiesList.get(i);
             this.univerities.put(university.getId(), university.getName());
         }
@@ -45,8 +48,10 @@ public class Manager {
             this.addStudents(numberOfStudents);
         }
         this.getAppointment();
+        this.getAllPatients();
     }
     public void addPatient(){
+
         String firstName = this.view.input("Ingrese el primer nombre:");
         String lastName = this.view.input("Ingrese el apellido:");
         String email = "";
@@ -60,15 +65,32 @@ public class Manager {
                 view.print("Ese correo ya ha sido tomado.");
             }
         }
+        Transaction tx = null;
+        Patient patient = null;
+        try {
+            this.connection.openSession();
 
-        Patient patient = new Patient(firstName, lastName, email.toLowerCase());
-        patient.save();
+            tx = this.connection.getSession().beginTransaction();
+            patient = new Patient(firstName, lastName, email.toLowerCase());
+            this.connection.getSession().save(patient);
+
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+//            e.printStackTrace();
+        } finally {
+            this.connection.closeSession();
+
+        }
 //        this.connection.getSession().save(patient);
         this.getAllPatients();
 
     }
 
     public void addStudent(){
+
+        this.connection.openSession();
+        Transaction tx = this.connection.getSession().beginTransaction();
         String firstName = this.view.input("Ingrese el primer nombre:");
         String lastName = this.view.input("Ingrese el apellido:");
         int universityId = this.view.selectKey(univerities);
@@ -76,12 +98,17 @@ public class Manager {
         int type_id = this.view.selectKey(studentTypes);
         Student student = new Student(firstName, lastName, phone, universityId, type_id);
         this.connection.getSession().save(student);
+        tx.commit();
+        this.connection.closeSession();
         this.getAllStudents();
 
     }
 
     public void addStudents(int number){
+
         for (int i = 0; i < number; i++) {
+            this.connection.openSession();
+            Transaction tx = this.connection.getSession().beginTransaction();
             String firstName = this.view.input("Ingrese el primer nombre:");
             String lastName = this.view.input("Ingrese el apellido:");
             int universityId = this.view.selectKey(univerities);
@@ -89,6 +116,8 @@ public class Manager {
             int type_id = this.view.selectKey(studentTypes);
             Student student = new Student(firstName, lastName, phone, universityId, type_id);
             this.connection.getSession().save(student);
+            tx.commit();
+            this.connection.closeSession();
         }
         this.getAllStudents();
 
@@ -98,7 +127,8 @@ public class Manager {
         this.studentsNames.clear();
         this.students.clear();
         List students = this.connection.getAll("Student");
-        for (int i = 1; i <= students.size(); i++) {
+
+        for (int i = 0; i < students.size(); i++) {
             Student student = (Student) students.get(i);
 
             this.studentsNames.put(student.getId(), student.getFullName());
@@ -110,10 +140,14 @@ public class Manager {
         this.appointments.clear();
         this.appointmentStrings.clear();
         List appointments = this.connection.getAll("Appointment");
-        for (int i = 1; i <= appointments.size(); i++) {
+        for (int i = 0; i < appointments.size(); i++) {
             Appointment appointment = (Appointment) appointments.get(i);
-            appointment.setData();
-            this.appointmentStrings.put(appointment.getId(), appointment.getDescrpition());
+            this.connection.openSession();
+
+            appointment.setData(this.connection);
+            this.connection.openSession();
+            this.appointmentStrings.put(appointment.getId(), appointment.getDescrpition(this.connection));
+            this.connection.closeSession();
             this.appointments.put(appointment.getId(), appointment);
         }
     }
@@ -122,11 +156,12 @@ public class Manager {
         this.patients.clear();
         this.patientStrings.clear();
         List patients = this.connection.getAll("Patient");
-        for (int i = 1; i <= patients.size(); i++) {
+        for (int i = 0; i < patients.size(); i++) {
             Patient patient = (Patient) patients.get(i);
             this.patientStrings.put(patient.getId(), patient.getFirstName() + " " + patient.getLastName());
             this.patients.put(patient.getId(), patient);
         }
+
     }
 
 
@@ -138,7 +173,7 @@ public class Manager {
         return view.selectKey(appointmentStrings);
     }
     public int getPatientIndex(){
-        return view.selectKey(patientStrings);
+        return view.selectKey(this.patientStrings);
     }
     public int getUniversityIndex(){
         return view.selectKey(univerities);
@@ -156,7 +191,19 @@ public class Manager {
             view.print((i+1) + ") " + students.get(i).getFullName());
         }
     }
-    public void addAppointment(String type){
+    public void printAllStudents(){
+        ArrayList<Student> all = new ArrayList<Student>();
+        this.students.forEach((key, student) -> all.add(student));
+        this.printStudents(all);
+    }
+    public void printAllPatients(){
+        ArrayList<Patient> all = new ArrayList<Patient>();
+        this.patients.forEach((key, patient) -> all.add(patient));
+        for (int i = 0; i < all.size(); i++) {
+            view.print((i+1) + ") " + all.get(i).getFirstName() + " " + all.get(i).getLastName() + " " + all.get(i).getEmail());
+        }
+    }
+    public void addAppointment(){
 //        this.getAllStudents();
 //        this.getAllStudents();
         if (this.students.isEmpty()){
@@ -170,31 +217,46 @@ public class Manager {
             if (this.patients.isEmpty()){
                 view.print("No tiene pacientes tiene que agregar uno.");
                 this.addPatient();
+                this.getAllPatients();
                 patientIndex = this.getPatientIndex();
             }else{
                 String d =  view.input("Ingrese 'si' si desea agregar un nuevo paciente o asignar un paciente.\nSi no desea puede ingresar cualquier otra cosa");
                 if (d.equalsIgnoreCase("si")){
                     this.addPatient();
                 }
+                this.getAllPatients();
                 view.print("Seleccione el paciente al que le quiere asignar");
                 patientIndex = this.getPatientIndex();
             }
 
             String observations = this.view.input("Ingrese las observaciones de la cita:");
             Appointment appointment = new Appointment(observations, reason, patientIndex, studentIndex, appointmentType);
+
+            this.connection.openSession();
+            Transaction tx = this.connection.getSession().beginTransaction();
             this.connection.getSession().save(appointment);
+            tx.commit();
+            this.connection.getSession().close();
             view.print("Cita tipo " + this.appointmentTypes.get(appointmentType) + " ingresada con exito");
             this.getAppointment();
         }
     }
 
     public void showAppointments(String who){
-        int index = (who.equals("student")) ? this.getStudentIndex() : this.getPatientIndex();
-        List list = this.connection.simpleWhere("Appointment", who+"_id", index);
-        if (list.isEmpty()){
-            view.print("No hay citas.");
+        if ((who.equals("student") && this.students.isEmpty()) || (who.equals("patient") && this.patients.isEmpty())){
+            String s = (who.equals("student")) ? "estudiantes" : "pacientes";
+            this.view.print("No hay " +s);
         }else{
-            list.forEach(appointment -> view.print(((Appointment)appointment).getDescrpition()));
+            int index = (who.equals("student")) ? this.getStudentIndex() : this.getPatientIndex();
+            List list = this.connection.simpleWhere("Appointment", who+"_id", index);
+            if (list.isEmpty()){
+                view.print("No hay citas.");
+            }else{
+                this.connection.openSession();
+
+                list.forEach(appointment -> view.print(((Appointment)appointment).getDescrpition(this.connection)));
+                this.connection.closeSession();
+            }
         }
         
     }
