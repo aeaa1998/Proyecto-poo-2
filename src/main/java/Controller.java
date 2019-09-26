@@ -34,7 +34,7 @@ public class Controller {
         return this.view.selectOptions(this.patientsMenu);
     }
 	
-	public Menu(){
+	public void Menu(){
 		
 		boolean active = true;
 		while(active){
@@ -63,10 +63,48 @@ public class Controller {
 					}
 				break;
 				case "Estudiantes":
-					//Code 
+					String k = this.view.selectOptions(this.studentsMenu);
+					boolean case2 = true;
+					while(case2){
+						switch(k){
+							case "Ver todos los estudiantes":
+								//code
+							break;
+							case "Agregar estudiante":
+								//code
+							break;
+							case "Ver estudiante por tipo":
+								//code
+							break;
+							case "Agregar estudiantes":
+								//code
+							break;
+							case "Regresar":
+								case2 = false;
+							break;
+							default:
+								view.print("Ingrese una opcion valida.");
+						}
+					}
 				break;
 				case "Pacientes":
-					//Code 
+					String l = this.view.selectOptions(this.patientsMenu);
+					boolean case3 = true;
+					while(case3){
+						switch(l){
+							case "Ver todos los pacientes":
+								//code
+							break;
+							case "Agregar paciente":
+								//code
+							break;
+							case "Regresar":
+								case3 = false;
+							break;
+							default:
+								view.print("Ingrese una opcion valida");
+						}
+					}
 				break;
 				case "Salir":
 					view.print("Gracias por utilizar este prototipo.");
