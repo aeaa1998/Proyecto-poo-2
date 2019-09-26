@@ -1,15 +1,8 @@
-/*
-Martín España 19258
-Javier Estuardo Hernandez 19202
-Angel Cuellar 18382    
-Augusto Alonso 181085
-Arturo Armendáriz 18021
-*/
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Column;
 
 @Entity
 @Table(name="universities")
@@ -20,6 +13,9 @@ public class University {
 
     @Column(name="name")
     private String name;
+
+    public University() {
+    }
 
     public University(String name) {
         this.name = name;

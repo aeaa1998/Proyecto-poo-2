@@ -25,6 +25,26 @@ public class Controller {
         this.manager = new Manager(myConnection);
     }
 
+    public void main(){
+        while (this.running){
+            String menu = this.printMenu();
+            switch (menu){
+                case "Jornadas":
+                    this.appointmentMenu();
+                    break;
+                case "Estudiantes":
+                    this.studentMenu();
+                    break;
+                case "Pacientes":
+                    this.patientMenu();
+                    break;
+                case "Salir":
+                    this.running = false;
+                    break;
+            }
+        }
+        this.myConnection.closeSession();
+    }
     public String printMenu(){
         return this.view.selectOptions(this.menu);
     }
@@ -39,4 +59,81 @@ public class Controller {
     }
 
 
+    public String printAppointmentMenu(){
+        return this.view.selectOptions(this.appointmentsMenu);
+    }
+
+    public void newAppointment(){
+        this.manager.addAppointment();
+    }
+
+    public void showAppointments(String who){
+        this.manager.showAppointments(who);
+    }
+
+    public void appointmentMenu(){
+        this.appointmentBool = true;
+        while(this.appointmentBool){
+            String appointMenu = this.printAppointmentMenu();
+            switch (appointMenu){
+                case "Solicitar jornada":
+                    this.newAppointment();
+                    break;
+                case "Ver jornadas de un estudiante":
+                    this.showAppointments("student");
+                    break;
+                case "Ver jornadas de un paciente":
+                    this.showAppointments("patient");
+                    break;
+                case "Regresar":
+                    this.appointmentBool = false;
+                    break;
+
+            }
+        }
+    }
+    public void studentMenu(){
+        this.studentsBool = true;
+        while(this.studentsBool){
+            String menu = this.printStudentMenu();
+            switch (menu){
+                case "Ver todos los estudiantes":
+                    this.manager.printAllStudents();
+                    break;
+                case "Ver estudiante por tipo":
+                    this.manager.filterStudents();
+                    break;
+                case "Agregar estudiante":
+                    this.manager.addStudent();
+                    break;
+                case "Agregar estudiantes":
+                    int i = this.view.intPositiveInput("Ingrese el numero de estudiantes que desea agregar", "Ingrese un valor valido");
+                    this.manager.addStudents(i);
+                    break;
+                case "Regresar":
+                    this.studentsBool = false;
+                    break;
+
+            }
+        }
+    }
+    public void patientMenu(){
+        this.patientsBool = true;
+        while(this.patientsBool){
+            String menu = this.printPatientsMenu();
+
+            switch (menu){
+                case "Ver todos los pacientes":
+                    this.manager.printAllPatients();
+                    break;
+                case "Agregar paciente":
+                    this.manager.addPatient();
+                    break;
+                case "Regresar":
+                    this.patientsBool = false;
+                    break;
+
+            }
+        }
+    }
 }
