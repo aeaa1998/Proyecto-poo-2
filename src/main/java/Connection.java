@@ -1,3 +1,13 @@
+/*
+Martín España 19258
+Javier Estuardo Hernandez 19202
+Angel Cuellar 18382    
+Augusto Alonso 181085
+Arturo Armendáriz 18021
+*/
+
+
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
