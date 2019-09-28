@@ -2,10 +2,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.cfg.Environment;
 import org.hibernate.query.Query;
 
-import java.lang.reflect.Type;
 import java.util.*;
 public class Connection {
 
@@ -14,11 +12,7 @@ public class Connection {
 
 
     public Connection() {
-        Configuration configuration = new Configuration();
-//        Properties settings = new Properties();
-//        configuration.setP
-//        settings.put(Environment.generate_statistics, "true");
-//        settings.put(Environment.)
+
         this.classFactories = new Configuration().configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Student.class)
                 .addAnnotatedClass(Appointment.class)
