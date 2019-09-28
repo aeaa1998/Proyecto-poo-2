@@ -23,6 +23,9 @@ public class Medicine {
     @Column(name="stock")
     private int stock;
 
+    public Medicine() {
+    }
+
     public Medicine(String name, String slug, String brand, int stock) {
         this.name = name;
         this.slug = slug;

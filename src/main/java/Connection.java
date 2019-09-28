@@ -1,6 +1,8 @@
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.Environment;
 import org.hibernate.query.Query;
 
 import java.lang.reflect.Type;
@@ -12,43 +14,87 @@ public class Connection {
 
 
     public Connection() {
-        classFactories = new Configuration().configure("hibernate.cfg.xml")
+        Configuration configuration = new Configuration();
+//        Properties settings = new Properties();
+//        configuration.setP
+//        settings.put(Environment.generate_statistics, "true");
+//        settings.put(Environment.)
+        this.classFactories = new Configuration().configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Student.class)
                 .addAnnotatedClass(Appointment.class)
+                .addAnnotatedClass(AppointmentType.class)
                 .addAnnotatedClass(Patient.class)
                 .addAnnotatedClass(Medicine.class)
                 .addAnnotatedClass(University.class)
                 .addAnnotatedClass(StudentType.class)
                 .buildSessionFactory();
+
     }
 
     public List getById(String className, int id) {
+        this.openSession();
+
+        Transaction tx = this.session.beginTransaction();
+
         Query query;
         query = this.session.createQuery("from " + className + " where id = :id");
 
         query.setParameter("id", id);
         List list = query.list();
+        tx.commit();
+        this.session.close();
+
         return list;
     }
 
-    public List getAll(String className) {
+    public void openSession(){
+        this.session = this.classFactories.openSession();
+
+    }
+
+    public List getAll(String className)
+    {
+        this.openSession();
+        Transaction tx = session.beginTransaction();
+
         Query query;
         query = this.session.createQuery("from " + className);
-        return query.list();
+        List l = query.list();
+        tx.commit();
+
+        this.session.close();
+        return l;
     }
     public List simpleWhere(String className, String column, String value) {
+        this.openSession();
+
+        Transaction tx = session.beginTransaction();
+
         Query query;
         query = this.session.createQuery("from " + className + " where "+column+" = :"+column+"");
         query.setParameter(column, value);
-        return query.list();
+
+        List l = query.list();
+        tx.commit();
+
+        session.close();
+        return l;
     }
 
     public List simpleWhere(String className, String column, int value) {
+        this.openSession();
+
+        Transaction tx = session.beginTransaction();
+
         Query query;
         query = this.session.createQuery("from " + className + " where "+column+" = :"+column+"");
         query.setParameter(column, value);
 
-        return query.list();
+        List l = query.list();
+        tx.commit();
+
+        this.session.close();
+        return l;
     }
 
     public void setClassFactories(SessionFactory classFactories) {
@@ -65,5 +111,18 @@ public class Connection {
 
     public Session getSession() {
         return session;
+    }
+    public void closeSession() {
+        this.classFactories.close();
+
+        this.classFactories = new Configuration().configure("hibernate.cfg.xml")
+                .addAnnotatedClass(Student.class)
+                .addAnnotatedClass(Appointment.class)
+                .addAnnotatedClass(AppointmentType.class)
+                .addAnnotatedClass(Patient.class)
+                .addAnnotatedClass(Medicine.class)
+                .addAnnotatedClass(University.class)
+                .addAnnotatedClass(StudentType.class)
+                .buildSessionFactory();
     }
 }

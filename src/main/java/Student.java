@@ -27,6 +27,7 @@ public class Student implements Models {
     @Column(name = "student_type_id")
     private int studentTypeId;
 
+    @Transient
     private StudentType studentType;
 
     public Student() {
@@ -113,14 +114,12 @@ public class Student implements Models {
     }
 
     @Override
-    public void update() {
-        Connection connection = new Connection();
+    public void update(Connection connection) {
         connection.getSession().update(this);
     }
 
     @Override
-    public void save() {
-        Connection connection = new Connection();
+    public void save(Connection connection) {
         connection.getSession().save(this);
     }
 }

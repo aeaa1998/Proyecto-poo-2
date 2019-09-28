@@ -97,6 +97,27 @@ public class View {
         }
         return value;
     }
+
+    public int intInput(String text, String text2, int minimum, int maximun){
+        Boolean valid = true;
+        int value = 0;
+        while (valid)
+        {
+            System.out.println(text);
+            String valueString = scanner.nextLine();
+            try{
+                value = Integer.parseInt(valueString);
+                valid = value <= 0 || value < minimum || value > maximun;
+                if (valid == true) {
+                    System.out.println(text2);
+                }
+            }
+            catch (Exception e) {
+                System.out.println("Ingrese un valor integer");
+            }
+        }
+        return value;
+    }
     public int intPositiveInput(String text, String text2){
         Boolean valid = true;
         int value = 0;
@@ -226,13 +247,19 @@ public class View {
         Boolean valid = true;
         int value;
 
-        for (int i = 0; i < map.size(); i++) {
-            String x = map.get(i+1);
-            System.out.print((i+1) + ". " + x + "\n");
-        }
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        final int[] i = {0};
+        map.forEach((id, string) -> {
+            System.out.print((i[0] +1) + ". " + string + "\n");
+
+            ids.add(id);
+            i[0]++;
+        });
+            
+
         value = this.intPositiveInput("Ingrese el numero de opcion que desee.", "No puede ser mayor a " + map.size(), map.size());
 
-        return value;
+        return ids.get(value - 1);
     }
 
 //    public Class<? extends Class> filter(Map<Integer, Class<? extends Class>> map){

@@ -1,4 +1,4 @@
 public interface Models {
-    public void update();
-    public void save();
+    public void update(Connection connection);
+    public void save(Connection connection);
 }

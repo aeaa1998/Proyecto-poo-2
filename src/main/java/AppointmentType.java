@@ -13,6 +13,9 @@ public class AppointmentType {
     @Column(name="name")
     private String name;
 
+    public AppointmentType() {
+    }
+
     public AppointmentType(String name) {
         this.name = name;
     }

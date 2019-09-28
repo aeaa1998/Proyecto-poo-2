@@ -20,6 +20,9 @@ public class Patient implements Models{
     @Column(name="email")
     private String email;
 
+    public Patient() {
+    }
+
     public Patient(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -70,14 +73,12 @@ public class Patient implements Models{
 
 
     @Override
-    public void update() {
-        Connection connection = new Connection();
+    public void update(Connection connection) {
         connection.getSession().update(this);
     }
 
     @Override
-    public void save() {
-        Connection connection = new Connection();
+    public void save(Connection connection) {
         connection.getSession().save(this);
     }
 }

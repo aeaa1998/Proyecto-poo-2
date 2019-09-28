@@ -13,6 +13,9 @@ public class University {
     @Column(name="name")
     private String name;
 
+    public University() {
+    }
+
     public University(String name) {
         this.name = name;
     }

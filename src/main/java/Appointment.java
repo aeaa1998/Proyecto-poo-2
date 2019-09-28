@@ -1,7 +1,6 @@
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.Transaction;
+
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -19,7 +18,7 @@ public class Appointment implements Models {
     private String reason;
 
 
-    @Column(name="patients_id")
+    @Column(name="patient_id")
     private int patientId;
 
     @Column(name="student_id")
@@ -28,8 +27,9 @@ public class Appointment implements Models {
     @Column(name="appointment_type_id")
     private int appointmentTypeId;
 
-
+    @Transient
     private Patient patient;
+    @Transient
     private Student student;
 
     public Appointment(String obervations, String reason, int patientId, int studentId, int appointmentTypeId) {
@@ -39,6 +39,9 @@ public class Appointment implements Models {
         this.studentId = studentId;
         this.appointmentTypeId = appointmentTypeId;
 
+    }
+
+    public Appointment() {
     }
 
     public int getId() {
@@ -85,7 +88,9 @@ public class Appointment implements Models {
         return reason;
     }
 
-    public String getDescrpition(){
+    public String getDescrpition(Connection connection){
+        connection.openSession();
+        this.setData(connection);
         return this.reason + " Estudiante " + this.student.getFullName() + " - " + this.patient.getFirstName() + this.patient.getLastName();
     }
 
@@ -100,25 +105,25 @@ public class Appointment implements Models {
                 '}';
     }
 
-    public void setData(){
-        Connection connection = new Connection();
+    public void setData(Connection connection){
+        Transaction tx = connection.getSession().beginTransaction();
 
         List list = connection.getById("Student", this.studentId);
         this.student = (Student) list.get(0);
 
         list = connection.getById("Patient", this.patientId);
+        tx.commit();
+
         this.patient = (Patient) list.get(0);
 
     }
     @Override
-    public void update() {
-        Connection connection = new Connection();
+    public void update(Connection connection) {
         connection.getSession().update(this);
     }
 
     @Override
-    public void save() {
-        Connection connection = new Connection();
+    public void save(Connection connection) {
         connection.getSession().save(this);
     }
 }
