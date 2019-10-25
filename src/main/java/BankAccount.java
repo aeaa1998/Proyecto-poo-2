@@ -10,6 +10,7 @@ public class BankAccount {
     }
 
     public void update(Connection connection){
+        this.balance = 0.0;
         List recordsList = connection.getAll("BankRecord");
         if (recordsList.isEmpty()){
             this.balance = 0.0;

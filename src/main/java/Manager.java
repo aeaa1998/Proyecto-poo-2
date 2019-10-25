@@ -287,7 +287,7 @@ public class Manager {
     }
 
     public void showAccount(){
-        this.bankAccount.update(this.connection);
+        this.bankAccount.printBalance(this.connection);
     }
     public void donate(){
         BankRecord bankRecord = new BankRecord();

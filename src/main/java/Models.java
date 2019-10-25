@@ -7,12 +7,26 @@ Arturo Armendáriz 18021
 */
 
 
+import org.hibernate.Transaction;
+
 public class Models {
     public void update(Connection connection){
+        connection.openSession();
+        Transaction tx = connection.getSession().beginTransaction();
+
         connection.getSession().update(this);
+        tx.commit();
+
+        connection.closeSession();
+
     };
     public void save(Connection connection){
-        connection.getSession().update(this);
+        connection.openSession();
+        Transaction tx = connection.getSession().beginTransaction();
+
+        connection.getSession().save(this);
+        tx.commit();
+        connection.closeSession();
     };
 }
 
