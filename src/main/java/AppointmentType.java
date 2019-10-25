@@ -5,7 +5,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="appointment_types")
-public class AppointmentType {
+public class AppointmentType extends Models {
     @Id
     @Column(name="id")
     private int id;

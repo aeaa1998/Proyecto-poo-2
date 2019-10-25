@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="patients")
-public class Patient implements Models{
+public class Patient extends Models{
     @Id
     @Column(name="id")
     private int id;
@@ -80,14 +80,4 @@ public class Patient implements Models{
         this.lastName = lastName;
     }
 
-
-    @Override
-    public void update(Connection connection) {
-        connection.getSession().update(this);
-    }
-
-    @Override
-    public void save(Connection connection) {
-        connection.getSession().save(this);
-    }
 }

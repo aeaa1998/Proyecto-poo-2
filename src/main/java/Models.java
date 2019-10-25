@@ -7,8 +7,12 @@ Arturo Armendáriz 18021
 */
 
 
-public interface Models {
-    public void update(Connection connection);
-    public void save(Connection connection);
+public class Models {
+    public void update(Connection connection){
+        connection.getSession().update(this);
+    };
+    public void save(Connection connection){
+        connection.getSession().update(this);
+    };
 }
 

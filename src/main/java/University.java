@@ -6,7 +6,7 @@ import javax.persistence.Column;
 
 @Entity
 @Table(name="universities")
-public class University {
+public class University extends Models {
     @Id
     @Column(name="id")
     private int id;

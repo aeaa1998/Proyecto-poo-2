@@ -5,7 +5,7 @@ import java.util.List;
 
 @Entity
 @Table(name="appointments")
-public class Appointment implements Models {
+public class Appointment extends Models {
     @Id
     @Column(name="id")
     private int id;
@@ -116,15 +116,6 @@ public class Appointment implements Models {
 
         this.patient = (Patient) list.get(0);
 
-    }
-    @Override
-    public void update(Connection connection) {
-        connection.getSession().update(this);
-    }
-
-    @Override
-    public void save(Connection connection) {
-        connection.getSession().save(this);
     }
 }
 

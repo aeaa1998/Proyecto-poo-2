@@ -7,17 +7,19 @@ public class Controller {
     View view;
 
     Connection myConnection;
-    ArrayList <String> menu = new ArrayList<String>(Arrays.asList("Jornadas", "Estudiantes", "Pacientes", "Salir"));
+    ArrayList <String> menu = new ArrayList<String>(Arrays.asList("Jornadas", "Estudiantes", "Pacientes", "Donaciones", "Salir"));
     ArrayList <String> appointmentsMenu = new ArrayList<String>(
             Arrays.asList("Solicitar jornada", "Ver jornadas de un estudiante", "Ver jornadas de un paciente", "Regresar"
             ));
     ArrayList <String> studentsMenu = new ArrayList<String>(
             Arrays.asList("Ver todos los estudiantes", "Agregar estudiante", "Ver estudiante por tipo", "Agregar estudiantes","Regresar"));
     ArrayList <String> patientsMenu = new ArrayList<String>(Arrays.asList("Ver todos los pacientes", "Agregar paciente","Regresar"));
+    ArrayList <String> donationsMenu = new ArrayList<String>(Arrays.asList("Ver cuenta", "Donar","Regresar"));
     Manager manager;
     boolean appointmentBool= false;
     boolean studentsBool= false;
     boolean patientsBool= false;
+    boolean donationBool= false;
     boolean running= true;
     public Controller() {
 
@@ -40,6 +42,9 @@ public class Controller {
                 case "Pacientes":
                     this.patientMenu();
                     break;
+                case "Donaciones":
+                    this.donationsMenu();
+                    break;
                 case "Salir":
                     this.running = false;
                     break;
@@ -54,6 +59,9 @@ public class Controller {
 
     public String printPatientsMenu(){
         return this.view.selectOptions(this.patientsMenu);
+    }
+    public String printDonationsMenu(){
+        return this.view.selectOptions(this.donationsMenu);
     }
 
     public String printStudentMenu(){
@@ -133,6 +141,25 @@ public class Controller {
                     break;
                 case "Regresar":
                     this.patientsBool = false;
+                    break;
+
+            }
+        }
+    }
+    public void donationsMenu(){
+        this.donationBool = true;
+        while(this.donationBool){
+            String menu = this.printDonationsMenu();
+
+            switch (menu){
+                case "Donar":
+                    this.manager.donate();
+                    break;
+                case "Ver cuenta":
+                    this.manager.showAccount();
+                    break;
+                case "Regresar":
+                    this.donationBool = false;
                     break;
 
             }

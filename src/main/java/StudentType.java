@@ -11,7 +11,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="student_types")
-public class StudentType {
+public class StudentType extends Models{
     @Id
     @Column(name="id")
     private int id;

@@ -1,3 +1,5 @@
+import org.sk.PrettyTable;
+
 import java.util.*;
 import java.lang.*;
 import java.text.*;
@@ -11,6 +13,9 @@ public class View {
     }
     public void print(String text){
         System.out.println(text);
+    }
+    public void print(PrettyTable table){
+        System.out.println(table);
     }
     public String input(String text){
         this.print(text);

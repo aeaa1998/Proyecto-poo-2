@@ -1,5 +1,7 @@
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+import org.sk.PrettyTable;
+
 
 import java.util.*;
 import java.lang.*;
@@ -7,6 +9,7 @@ import java.text.*;
 
 public class Manager {
     View view;
+    BankAccount bankAccount;
     Map<Integer, String> studentTypes = new HashMap<Integer, String>();
     Map<Integer, String> univerities = new HashMap<Integer, String>();
     Map<Integer, String> studentsNames = new HashMap<Integer, String>();
@@ -23,7 +26,9 @@ public class Manager {
 
     public Manager (Connection connection){
         view = new View();
+
         this.connection = connection;
+        this.bankAccount = new BankAccount(this.connection);
         List studentTypeList = this.connection.getAll("StudentType");
         List universitiesList = this.connection.getAll("University");
         List aList = this.connection.getAll("AppointmentType");
@@ -187,9 +192,14 @@ public class Manager {
 
     }
     public void printStudents(ArrayList<Student> students){
+
+        PrettyTable table = new PrettyTable("Numero de estudiante", "Primer nombre", "Apellido", "Numero", "Universidad");
         for (int i = 0; i < students.size(); i++) {
-            view.print((i+1) + ") " + students.get(i).getFullName());
+            Student s = students.get(i);
+            table.addRow(String.valueOf(i+1), s.getFirstName(), s.getLastName(), s.getPhone(), this.univerities.get(s.getUniversityId()));
         }
+        view.print(table);
+
     }
     public void printAllStudents(){
         ArrayList<Student> all = new ArrayList<Student>();
@@ -199,9 +209,14 @@ public class Manager {
     public void printAllPatients(){
         ArrayList<Patient> all = new ArrayList<Patient>();
         this.patients.forEach((key, patient) -> all.add(patient));
+        PrettyTable table = new PrettyTable("Numero de paciente", "Primer nombre", "Apellido", "email");
+
         for (int i = 0; i < all.size(); i++) {
-            view.print((i+1) + ") " + all.get(i).getFirstName() + " " + all.get(i).getLastName() + " " + all.get(i).getEmail());
+            Patient p = all.get(i);
+            table.addRow(String.valueOf(i+1), p.getFirstName(), p.getLastName(), p.getEmail());
         }
+        view.print(table);
+
     }
     public void addAppointment(){
 //        this.getAllStudents();
@@ -253,11 +268,32 @@ public class Manager {
                 view.print("No hay citas.");
             }else{
                 this.connection.openSession();
+                PrettyTable table = new PrettyTable("Tipo de cita", "Nombre de paciente", "Nombre de estudiante", "Razon", "Observaciones");
 
-                list.forEach(appointment -> view.print(((Appointment)appointment).getDescrpition(this.connection)));
+                list.forEach(appointment -> {
+                    ((Appointment)appointment).getDescrpition(this.connection);
+                    Appointment a = ((Appointment)appointment);
+                    Patient p = this.patients.get(a.getPatientId());
+                    Student s = this.students.get(a.getStudentId());
+                    table.addRow(this.appointmentTypes.get(a.getAppointmentTypeId()), p.getFirstName() + " " + p.getLastName(), s.getFullName(), a.getReason(), a.getObervations());
+                });
+                this.view.print(table);
                 this.connection.closeSession();
             }
         }
+
+
         
+    }
+
+    public void showAccount(){
+        this.bankAccount.update(this.connection);
+    }
+    public void donate(){
+        BankRecord bankRecord = new BankRecord();
+        bankRecord.setAmount(this.view.doubleInput("Ingrese la cantidad por donar:", "Ingrese una valor valido", 0.1));
+        bankRecord.setRecordTypeId(1);
+        bankRecord.save(this.connection);
+        this.bankAccount.update(this.connection);
     }
 }

@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="medicines")
-public class Medicine {
+public class Medicine extends Models {
     @Id
     @Column(name="id")
     private int id;

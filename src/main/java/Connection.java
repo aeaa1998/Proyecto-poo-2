@@ -113,6 +113,8 @@ public class Connection {
                 .addAnnotatedClass(Student.class)
                 .addAnnotatedClass(Appointment.class)
                 .addAnnotatedClass(AppointmentType.class)
+                .addAnnotatedClass(RecordType.class)
+                .addAnnotatedClass(BankRecord.class)
                 .addAnnotatedClass(Patient.class)
                 .addAnnotatedClass(Medicine.class)
                 .addAnnotatedClass(University.class)
