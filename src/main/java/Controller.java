@@ -7,7 +7,7 @@ public class Controller {
     View view;
 
     Connection myConnection;
-    ArrayList <String> menu = new ArrayList<String>(Arrays.asList("Jornadas", "Estudiantes", "Pacientes", "Donaciones", "Salir"));
+    ArrayList <String> menu = new ArrayList<String>(Arrays.asList("Jornadas", "Estudiantes", "Pacientes", "Patrocinadores", "Donaciones", "Salir"));
     ArrayList <String> appointmentsMenu = new ArrayList<String>(
             Arrays.asList("Solicitar jornada", "Ver jornadas de un estudiante", "Ver jornadas de un paciente", "Regresar"
             ));
@@ -15,6 +15,7 @@ public class Controller {
             Arrays.asList("Ver todos los estudiantes", "Agregar estudiante", "Ver estudiante por tipo", "Agregar estudiantes","Regresar"));
     ArrayList <String> patientsMenu = new ArrayList<String>(Arrays.asList("Ver todos los pacientes", "Agregar paciente","Regresar"));
     ArrayList <String> donationsMenu = new ArrayList<String>(Arrays.asList("Ver cuenta", "Donar","Regresar"));
+    ArrayList <String> sponsorsMenu = new ArrayList<String>(Arrays.asList("Ver patrocinadores","Regresar"));
     Manager manager;
     boolean appointmentBool= false;
     boolean studentsBool= false;
@@ -45,6 +46,9 @@ public class Controller {
                 case "Donaciones":
                     this.donationsMenu();
                     break;
+                case "Patrocinadores":
+                    this.sponsorsMenu();
+                    break;
                 case "Salir":
                     this.running = false;
                     break;
@@ -71,6 +75,9 @@ public class Controller {
 
     public String printAppointmentMenu(){
         return this.view.selectOptions(this.appointmentsMenu);
+    }
+    public String printSponsorsMenu(){
+        return this.view.selectOptions(this.sponsorsMenu);
     }
 
     public void newAppointment(){
@@ -160,6 +167,23 @@ public class Controller {
                     break;
                 case "Regresar":
                     this.donationBool = false;
+                    break;
+
+            }
+        }
+    }
+    public void sponsorsMenu(){
+        Boolean sponsorM = true;
+        while(sponsorM){
+            String menu = this.printSponsorsMenu();
+
+            switch (menu){
+                case "Ver patrocinadores":
+                    this.manager.printAllSponsors();
+                    break;
+
+                case "Regresar":
+                    sponsorM = false;
                     break;
 
             }

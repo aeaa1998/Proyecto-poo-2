@@ -1,6 +1,7 @@
 import org.hibernate.Transaction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,6 +32,8 @@ public class Appointment extends Models {
     private Patient patient;
     @Transient
     private Student student;
+    @Transient
+    private ArrayList<Medicine> medicines;
 
     public Appointment(String obervations, String reason, int patientId, int studentId, int appointmentTypeId) {
         this.obervations = obervations;
@@ -112,9 +115,16 @@ public class Appointment extends Models {
         this.student = (Student) list.get(0);
 
         list = connection.getById("Patient", this.patientId);
-        tx.commit();
 
         this.patient = (Patient) list.get(0);
+
+        list = connection.simpleWhere("AppointmentMedicine", "appointment_id", this.id);
+        list.forEach(a -> {
+            List listn = connection.getById("Medicine", ((AppointmentMedicine)a).getMedicineId());
+            Medicine med = (Medicine)listn.get(0);
+            this.medicines.add(med);
+        });
+        tx.commit();
 
     }
 }

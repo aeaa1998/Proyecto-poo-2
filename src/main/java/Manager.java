@@ -19,6 +19,10 @@ public class Manager {
     Map<Integer, String> patientStrings = new HashMap<Integer, String>();
     Map<Integer, Patient> patients = new HashMap<Integer, Patient>();
     Map<Integer, String> appointmentTypes = new HashMap<Integer, String>();
+    Map<Integer, String> sponsorNames = new HashMap<Integer, String>();
+    Map<Integer, Sponsor> sponsors = new HashMap<Integer, Sponsor>();
+    Map<Integer, String> medicinesNames = new HashMap<Integer, String>();
+    Map<Integer, Medicine> medicines = new HashMap<Integer, Medicine>();
 
 
 
@@ -31,11 +35,18 @@ public class Manager {
         this.bankAccount = new BankAccount(this.connection);
         List studentTypeList = this.connection.getAll("StudentType");
         List universitiesList = this.connection.getAll("University");
+        List medicinesList = this.connection.getAll("Medicine");
         List aList = this.connection.getAll("AppointmentType");
         this.getAllStudents();
         for (int i = 0; i < aList.size(); i++) {
             AppointmentType appointmentType = (AppointmentType) aList.get(i);
             appointmentTypes.put(appointmentType.getId(), appointmentType.getName());
+        }
+
+        for (int i = 0; i < medicinesList.size(); i++) {
+            Medicine medicine = (Medicine) medicinesList.get(i);
+            this.medicines.put(medicine.getId(), medicine);
+            this.medicinesNames.put(medicine.getId(), medicine.getName());
         }
 
         for (int i = 0; i < studentTypeList.size(); i++) {
@@ -54,6 +65,7 @@ public class Manager {
         }
         this.getAppointment();
         this.getAllPatients();
+        this.getAllSponsors();
     }
     public void addPatient(){
 
@@ -128,6 +140,19 @@ public class Manager {
 
     }
 
+    public void addSponsor(){
+
+            this.connection.openSession();
+            Transaction tx = this.connection.getSession().beginTransaction();
+            String name = this.view.input("Ingrese el nombre de el ente que va a patrocinar:");
+            Sponsor sponsor = new Sponsor(name);
+            this.connection.getSession().save(sponsor);
+            tx.commit();
+            this.connection.closeSession();
+            this.getAllSponsors();
+
+    }
+
     public void getAllStudents(){
         this.studentsNames.clear();
         this.students.clear();
@@ -138,6 +163,18 @@ public class Manager {
 
             this.studentsNames.put(student.getId(), student.getFullName());
             this.students.put(student.getId(), student);
+        }
+    }
+    public void getAllSponsors(){
+        this.sponsorNames.clear();
+        this.sponsors.clear();
+        List sponsors = this.connection.getAll("Sponsor");
+
+        for (int i = 0; i < sponsors.size(); i++) {
+            Sponsor sponsor = (Sponsor) sponsors.get(i);
+
+            this.sponsorNames.put(sponsor.getId(), sponsor.getName());
+            this.sponsors.put(sponsor.getId(), sponsor);
         }
     }
 
@@ -201,11 +238,27 @@ public class Manager {
         view.print(table);
 
     }
+    public void printSponsors(ArrayList<Sponsor> sponsors){
+
+        PrettyTable table = new PrettyTable("Numero de patrocinador", "Nombre");
+        for (int i = 0; i < sponsors.size(); i++) {
+            Sponsor s = sponsors.get(i);
+            table.addRow(String.valueOf(i+1), s.getName());
+        }
+        view.print(table);
+
+    }
     public void printAllStudents(){
         ArrayList<Student> all = new ArrayList<Student>();
         this.students.forEach((key, student) -> all.add(student));
         this.printStudents(all);
     }
+    public void printAllSponsors(){
+        ArrayList<Sponsor> all = new ArrayList<Sponsor>();
+        this.sponsors.forEach((key, sponsor) -> all.add(sponsor));
+        this.printSponsors(all);
+    }
+
     public void printAllPatients(){
         ArrayList<Patient> all = new ArrayList<Patient>();
         this.patients.forEach((key, patient) -> all.add(patient));
@@ -246,14 +299,35 @@ public class Manager {
 
             String observations = this.view.input("Ingrese las observaciones de la cita:");
             Appointment appointment = new Appointment(observations, reason, patientIndex, studentIndex, appointmentType);
-
             this.connection.openSession();
             Transaction tx = this.connection.getSession().beginTransaction();
             this.connection.getSession().save(appointment);
             tx.commit();
             this.connection.getSession().close();
-            view.print("Cita tipo " + this.appointmentTypes.get(appointmentType) + " ingresada con exito");
             this.getAppointment();
+            Appointment ap = this.appointments.get(this.appointments.size() -1);
+            String m = this.view.input("Desea agregar mediinas?\nIngrese 'si' si desea agregar, ingrese cualquier otra cosa en caso no desee agregar");
+            if (m.equalsIgnoreCase("si")) {
+                ArrayList<Medicine> medsC = new ArrayList<Medicine>();
+                int c = this.view.intPositiveInput("Ingrese la cantidad de medicinas que desea agregar", "Ingrese un valor valido");
+                for (int i = 0; i < c; i++) {
+                    int idC = this.view.selectKey(this.medicinesNames);
+                    medsC.add(this.medicines.get(idC));
+                }
+                for (int i = 0; i < medsC.size(); i++) {
+                    this.connection.openSession();
+                    Transaction tx2 = this.connection.getSession().beginTransaction();
+                    AppointmentMedicine appointmentMedicine = new AppointmentMedicine(medsC.get(i).getId(), ap.getId());
+
+                    this.connection.getSession().save(appointmentMedicine);
+                    tx2.commit();
+                    this.connection.getSession().close();
+                }
+                this.getAppointment();
+
+            }
+            view.print("Cita tipo " + this.appointmentTypes.get(appointmentType) + " ingresada con exito");
+
         }
     }
 
@@ -293,6 +367,13 @@ public class Manager {
         BankRecord bankRecord = new BankRecord();
         bankRecord.setAmount(this.view.doubleInput("Ingrese la cantidad por donar:", "Ingrese una valor valido", 0.1));
         bankRecord.setRecordTypeId(1);
+
+        this.view.print("Ingrese 'si' en caso de que ya sea patrocinador.\nEn caso ya sea patrocinador ingrese cualquier otra cosa.\n");
+        if (!this.view.input("").equalsIgnoreCase("si"))
+            this.addSponsor();
+
+        this.view.print("Ingrese el patrocinador");
+        bankRecord.setSponsorId(this.view.selectKey(this.sponsorNames));
         bankRecord.save(this.connection);
         this.bankAccount.update(this.connection);
     }

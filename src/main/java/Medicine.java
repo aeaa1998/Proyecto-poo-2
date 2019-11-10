@@ -23,9 +23,6 @@ public class Medicine extends Models {
     private String name;
 
 
-    @Column(name="slug")
-    private String slug;
-
     @Column(name="brand")
     private String brand;
 
@@ -35,9 +32,8 @@ public class Medicine extends Models {
     public Medicine() {
     }
 
-    public Medicine(String name, String slug, String brand, int stock) {
+    public Medicine(String name, String brand, int stock) {
         this.name = name;
-        this.slug = slug;
         this.brand = brand;
         this.stock = stock;
     }
@@ -58,13 +54,6 @@ public class Medicine extends Models {
         this.name = name;
     }
 
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
 
     public String getBrand() {
         return brand;

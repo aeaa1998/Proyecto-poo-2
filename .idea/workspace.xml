@@ -12,19 +12,20 @@
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/Appointment.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/Appointment.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/AppointmentType.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/AppointmentType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/BankAccount.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/BankAccount.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/BankRecord.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/BankRecord.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/Connection.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/Connection.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/Controller.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/Controller.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/Manager.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/Manager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/Medicine.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/Medicine.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/Models.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/Models.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/Patient.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/Patient.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/Student.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/Student.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/StudentType.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/StudentType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/University.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/University.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BankAccount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BankAccount.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/hibernate.cfg.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Appointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Appointment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BankRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BankRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Connection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Controller.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Manager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Manager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Models.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Models.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Medicine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Medicine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

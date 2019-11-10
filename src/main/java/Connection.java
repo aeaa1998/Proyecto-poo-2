@@ -20,6 +20,7 @@ public class Connection {
                 .addAnnotatedClass(Patient.class)
                 .addAnnotatedClass(Medicine.class)
                 .addAnnotatedClass(University.class)
+                .addAnnotatedClass(Sponsor.class)
                 .addAnnotatedClass(StudentType.class)
                 .buildSessionFactory();
 

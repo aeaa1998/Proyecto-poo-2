@@ -18,21 +18,28 @@ public class BankRecord extends Models{
     @Column(name = "created_at")
     private Date createdAt;
 
+    @Column(name = "sponsor_id")
+    private int sponsorId;
+
     @Transient
     private RecordType recordType;
 
     public BankRecord() {
     }
 
-    public BankRecord(Double amount, int recordTypeId, Date createdAt, RecordType recordType) {
+    public BankRecord(Double amount, int recordTypeId, Date createdAt, RecordType recordType, int sponsorId) {
         this.amount = amount;
         this.recordTypeId = recordTypeId;
         this.createdAt = createdAt;
         this.recordType = recordType;
+        this.sponsorId = sponsorId;
     }
 
     public int getId() {
         return id;
+    }
+    public int getSponsorId() {
+        return this.sponsorId;
     }
 
     public void setId(int id) {
@@ -45,6 +52,9 @@ public class BankRecord extends Models{
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+    public void setSponsorId(int id) {
+        this.sponsorId = id;
     }
 
     public int getRecordTypeId() {
