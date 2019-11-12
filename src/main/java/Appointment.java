@@ -33,7 +33,7 @@ public class Appointment extends Models {
     @Transient
     private Student student;
     @Transient
-    private ArrayList<Medicine> medicines;
+    private ArrayList<Medicine> medicines = new ArrayList<Medicine>();
 
     public Appointment(String obervations, String reason, int patientId, int studentId, int appointmentTypeId) {
         this.obervations = obervations;
@@ -118,11 +118,17 @@ public class Appointment extends Models {
 
         this.patient = (Patient) list.get(0);
 
-        list = connection.simpleWhere("AppointmentMedicine", "appointment_id", this.id);
+//        list = connection.simpleWhere("AppointmentMedicine", "appointment_id", this.id);
+        list = connection.getAll("AppointmentMedicine");
+
         list.forEach(a -> {
-            List listn = connection.getById("Medicine", ((AppointmentMedicine)a).getMedicineId());
-            Medicine med = (Medicine)listn.get(0);
-            this.medicines.add(med);
+            AppointmentMedicine apm = (AppointmentMedicine) a;
+            if (apm.getAppointmentId() == this.id){
+
+                List listn = connection.getById("Medicine", ((AppointmentMedicine)a).getMedicineId());
+                Medicine med = (Medicine)listn.get(0);
+                this.medicines.add(med);
+            }
         });
         tx.commit();
 

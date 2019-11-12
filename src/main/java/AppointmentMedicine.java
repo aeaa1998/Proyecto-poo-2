@@ -1,11 +1,9 @@
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="appointment_medicines")
 public class AppointmentMedicine extends Models {
+
     @Id
     @Column(name="id")
     private int id;
@@ -33,6 +31,10 @@ public class AppointmentMedicine extends Models {
 
     public int getAppointmentId() {
         return appointmentId;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void setAppointmentId(int appointmentId) {

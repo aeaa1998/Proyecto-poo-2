@@ -23,6 +23,7 @@ public class Manager {
     Map<Integer, Sponsor> sponsors = new HashMap<Integer, Sponsor>();
     Map<Integer, String> medicinesNames = new HashMap<Integer, String>();
     Map<Integer, Medicine> medicines = new HashMap<Integer, Medicine>();
+    Map<Integer, AppointmentMedicine> medicinesAppointments = new HashMap<Integer, AppointmentMedicine>();
 
 
 
@@ -30,7 +31,6 @@ public class Manager {
 
     public Manager (Connection connection){
         view = new View();
-
         this.connection = connection;
         this.bankAccount = new BankAccount(this.connection);
         List studentTypeList = this.connection.getAll("StudentType");
@@ -38,6 +38,8 @@ public class Manager {
         List medicinesList = this.connection.getAll("Medicine");
         List aList = this.connection.getAll("AppointmentType");
         this.getAllStudents();
+        List amList = this.connection.getAll("AppointmentMedicine");
+        amList.forEach(am -> this.medicinesAppointments.put(((AppointmentMedicine)am).getId(), ((AppointmentMedicine)am)));
         for (int i = 0; i < aList.size(); i++) {
             AppointmentType appointmentType = (AppointmentType) aList.get(i);
             appointmentTypes.put(appointmentType.getId(), appointmentType.getName());
@@ -315,15 +317,14 @@ public class Manager {
                     medsC.add(this.medicines.get(idC));
                 }
                 for (int i = 0; i < medsC.size(); i++) {
-                    this.connection.openSession();
-                    Transaction tx2 = this.connection.getSession().beginTransaction();
                     AppointmentMedicine appointmentMedicine = new AppointmentMedicine(medsC.get(i).getId(), ap.getId());
-
-                    this.connection.getSession().save(appointmentMedicine);
-                    tx2.commit();
-                    this.connection.getSession().close();
+                    appointmentMedicine.save(this.connection);
                 }
                 this.getAppointment();
+                List amList = this.connection.getAll("AppointmentMedicine");
+                this.medicinesAppointments.clear();
+                amList.forEach(am -> this.medicinesAppointments.put(((AppointmentMedicine)am).getId(), ((AppointmentMedicine)am)));
+
 
             }
             view.print("Cita tipo " + this.appointmentTypes.get(appointmentType) + " ingresada con exito");
@@ -342,14 +343,20 @@ public class Manager {
                 view.print("No hay citas.");
             }else{
                 this.connection.openSession();
-                PrettyTable table = new PrettyTable("Tipo de cita", "Nombre de paciente", "Nombre de estudiante", "Razon", "Observaciones");
+                PrettyTable table = new PrettyTable("Tipo de cita", "Nombre de paciente", "Nombre de estudiante", "Razon", "Observaciones", "Medicinas");
 
                 list.forEach(appointment -> {
                     ((Appointment)appointment).getDescrpition(this.connection);
                     Appointment a = ((Appointment)appointment);
                     Patient p = this.patients.get(a.getPatientId());
                     Student s = this.students.get(a.getStudentId());
-                    table.addRow(this.appointmentTypes.get(a.getAppointmentTypeId()), p.getFirstName() + " " + p.getLastName(), s.getFullName(), a.getReason(), a.getObervations());
+                    ArrayList<String> medicinesStrings = new ArrayList<String>();
+                    this.medicinesAppointments.forEach((key, appointmentMedicine) -> {
+                        if (appointmentMedicine.getAppointmentId() == ((Appointment) appointment).getId())
+                            medicinesStrings.add(this.medicines.get(appointmentMedicine.getMedicineId()).getName() + " " + this.medicines.get(appointmentMedicine.getMedicineId()).getBrand());
+                    });
+                    String string = String.join(", ", medicinesStrings);
+                    table.addRow(this.appointmentTypes.get(a.getAppointmentTypeId()), p.getFirstName() + " " + p.getLastName(), s.getFullName(), a.getReason(), a.getObervations(), string);
                 });
                 this.view.print(table);
                 this.connection.closeSession();
